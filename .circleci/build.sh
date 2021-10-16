@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 echo "Downloading few Dependecies . . ."
 git clone --depth=1 $kernel_source $device_codename
-git clone --depth=1 https://github.com/xyz-prjkt/xRageTC-clang clang
+git clone --depth=1 https://github.com/silont-project/silont-clang -b 13 clang
 
 # Main
 KERNEL_NAME=$kernel_name # IMPORTANT ! Declare your kernel name
@@ -9,8 +9,8 @@ KERNEL_ROOTDIR=$(pwd)/$device_codename # IMPORTANT ! Fill with your kernel sourc
 DEVICE_CODENAME=$device_codename # IMPORTANT ! Declare your device codename
 DEVICE_DEFCONFIG=$kernel_defconfig # IMPORTANT ! Declare your kernel source defconfig file here.
 CLANG_ROOTDIR=$(pwd)/clang # IMPORTANT! Put your clang directory here.
-export KBUILD_BUILD_USER=xyzuan # Change with your own name or else.
-export KBUILD_BUILD_HOST=xyzscape-ci # Change with your own hostname.
+export KBUILD_BUILD_USER=hengeker # Change with your own name or else.
+export KBUILD_BUILD_HOST=hengker-ci # Change with your own hostname.
 IMAGE=$(pwd)/lavender/out/arch/arm64/boot/Image.gz-dtb
 DATE=$(date +"%F-%S")
 START=$(date +"%s")
@@ -21,7 +21,7 @@ PATH="${PATH}:${CLANG_ROOTDIR}/bin"
 function check() {
 echo ================================================
 echo xKernelCompiler CircleCI Edition
-echo version : rev1.5 - gaspoll
+echo version : v9999 - ngentod
 echo ================================================
 echo BUILDER NAME = ${KBUILD_BUILD_USER}
 echo BUILDER HOSTNAME = ${KBUILD_BUILD_HOST}
@@ -45,16 +45,16 @@ function compile() {
   cd ${KERNEL_ROOTDIR}
   make -j$(nproc) O=out ARCH=arm64 ${DEVICE_DEFCONFIG}
   make -j$(nproc) ARCH=arm64 O=out \
-	CC=${CLANG_ROOTDIR}/bin/clang \
-	CROSS_COMPILE=${CLANG_ROOTDIR}/bin/aarch64-linux-gnu- \
-	CROSS_COMPILE_ARM32=${CLANG_ROOTDIR}/bin/arm-linux-gnueabi-
+        CC=${CLANG_ROOTDIR}/bin/clang \
+        CROSS_COMPILE=${CLANG_ROOTDIR}/bin/aarch64-linux-gnu- \
+        CROSS_COMPILE_ARM32=${CLANG_ROOTDIR}/bin/arm-linux-gnueabi-
 
    if ! [ -a "$IMAGE" ]; then
-	finerr
-	exit 1
+        finerr
+        exit 1
    fi
     git clone --depth=1 $anykernel AnyKernel
-	cp out/arch/arm64/boot/Image.gz-dtb AnyKernel
+        cp out/arch/arm64/boot/Image.gz-dtb AnyKernel
 }
 
 # Push
