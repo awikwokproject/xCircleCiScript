@@ -11,7 +11,7 @@ DEVICE_DEFCONFIG=$kernel_defconfig # IMPORTANT ! Declare your kernel source defc
 CLANG_ROOTDIR=$(pwd)/clang # IMPORTANT! Put your clang directory here.
 export KBUILD_BUILD_USER=hengeker # Change with your own name or else.
 export KBUILD_BUILD_HOST=hengker-ci # Change with your own hostname.
-IMAGE=$(pwd)/lavender/out/arch/arm64/boot/Image.gz-dtb
+IMAGE=$(pwd)/ginkgo/out/arch/arm64/boot/Image.gz-dtb
 DATE=$(date +"%F-%S")
 START=$(date +"%s")
 PATH="${PATH}:${CLANG_ROOTDIR}/bin"
@@ -44,10 +44,10 @@ function compile() {
 
   cd ${KERNEL_ROOTDIR}
   make -j$(nproc) O=out ARCH=arm64 ${DEVICE_DEFCONFIG}
-  make -j$(nproc) ARCH=arm64 O=out \
-        CC=${CLANG_ROOTDIR}/bin/clang \
-        CROSS_COMPILE=${CLANG_ROOTDIR}/bin/aarch64-linux-gnu- \
-        CROSS_COMPILE_ARM32=${CLANG_ROOTDIR}/bin/arm-linux-gnueabi-
+  make -j$(nproc --all) O=out ARCH=arm64 CC=${CLANG_ROOTDIR}/bin/clang LD=ld.lld AR=llvm-ar AS=llvm-as NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- Image.gz-dtb dtbo.img \
+
+
+
 
    if ! [ -a "$IMAGE" ]; then
         finerr
@@ -55,6 +55,7 @@ function compile() {
    fi
     git clone --depth=1 $anykernel AnyKernel
         cp out/arch/arm64/boot/Image.gz-dtb AnyKernel
+        cp out/arch/arm64/boot/dtbo.img AnyKernel
 }
 
 # Push
