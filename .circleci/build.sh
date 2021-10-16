@@ -44,7 +44,7 @@ function compile() {
 
   cd ${KERNEL_ROOTDIR}
   make -j$(nproc) O=out ARCH=arm64 ${DEVICE_DEFCONFIG}
-  make -j$(nproc --all) O=out ARCH=arm64 CC=${CLANG_ROOTDIR}/bin/clang LD=ld.lld AR=llvm-ar AS=llvm-as NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- Image.gz-dtb dtbo.img \
+  make -j$(nproc --all) VERBOSE=1 EMCC_DEBUG=1 O=out ARCH=arm64 CC=${CLANG_ROOTDIR}/bin/clang LD=ld.lld AR=llvm-ar AS=llvm-as NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- Image.gz-dtb dtbo.img \
 
 
 
